@@ -7,7 +7,7 @@ import "fmt"
 /*
 *step:
 *1. find the base case
-*2. divide the proble, recure the base case
+*2. divide the problem, recure until the base case
  */
 
 func main() {
