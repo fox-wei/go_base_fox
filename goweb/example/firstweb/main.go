@@ -39,3 +39,5 @@ func sayHello(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "Hello fox") //*打印到客户端
 }
+
+//*结束程序运行：终端：Ctrl+C
