@@ -1,11 +1,13 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"text/template"
+	"time"
 
 	"github.com/fox-wei/go_base_fox/goweb/example/form/verify"
 )
@@ -20,16 +22,30 @@ func login(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("login route method:", r.Method)
 
 	if r.Method == "GET" {
+		timeStamp := strconv.Itoa(time.Now().Nanosecond())
+		hashWr := md5.New()
+		hashWr.Write([]byte(timeStamp))
+		token := fmt.Sprintf("%x", hashWr.Sum(nil))
+
 		//&解析html文件
 		t, err := template.ParseFiles("D:/compterstudy/programing_language/go_language/practicalgo/go_base_fox/goweb/example/form/formmain/login.html")
 		if err != nil {
 			fmt.Println(err)
 		} else {
-			log.Println(t.Execute(w, nil))
+			log.Println(t.Execute(w, token))
 		}
 	} else {
 		r.ParseForm() //^解析参数，否则无法获取请求信息
 		// fmt.Println("username:", r.Form.Get("username")) //*如果是map r.Form["name"]
+		//?验证多次提交表菜单
+		token := r.Form.Get("token")
+		//^验证表单的合法性
+		if token == "" {
+			fmt.Println("验证token的合法性")
+		} else {
+			fmt.Println("错误")
+		}
+		fmt.Println(token)
 		getInt, _ := strconv.Atoi(r.Form.Get("username"))
 		fmt.Println("username:", getInt)
 		fmt.Println("password:", r.Form.Get("password"))
