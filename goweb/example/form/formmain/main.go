@@ -9,13 +9,14 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/fox-wei/go_base_fox/goweb/example/form/loadfile"
 	"github.com/fox-wei/go_base_fox/goweb/example/form/verify"
 )
 
 func sayHello(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //?解析传递参数，如果没有这个无法获取表单数据
 	fmt.Println(r.URL.Path)
-	fmt.Fprintf(w, "Hello ying")
+	fmt.Fprintf(w, "想改，却最终失败，大抵上都是 “误以为改变是瞬间的事情” 造成的")
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -114,6 +115,7 @@ func main() {
 	http.HandleFunc("/", sayHello)
 	http.HandleFunc("/login", login)
 	http.HandleFunc("/logon", logon)
+	http.HandleFunc("/upload", loadfile.UploadFile)
 
 	err := http.ListenAndServe(":9090", nil)
 	if err != nil {
