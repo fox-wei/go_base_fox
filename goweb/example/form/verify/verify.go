@@ -44,3 +44,11 @@ func IsID(value string) bool {
 	}
 	return true
 }
+
+func IsMobile(value string) bool {
+	//*Chinese number
+	if m, _ := regexp.MatchString(`^(1[3|4|5|8][0-9]\d{4,8})$`, value); !m {
+		return false
+	}
+	return true
+}
