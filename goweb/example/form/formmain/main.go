@@ -117,7 +117,7 @@ func main() {
 	http.HandleFunc("/logon", logon)
 	http.HandleFunc("/upload", loadfile.UploadFile)
 
-	err := http.ListenAndServe(":9090", nil)
+	err := http.ListenAndServe(":9090", nil) //*第二个参数handler处理： nil:DefaultServerMux
 	if err != nil {
 		log.Fatal("ListenAndServer", err)
 	}
