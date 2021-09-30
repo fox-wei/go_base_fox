@@ -43,7 +43,7 @@ func UploadFile(w http.ResponseWriter, r *http.Request) {
 				fmt.Println(err)
 			} else {
 				defer f.Close()
-				io.Copy(f, file)
+				io.Copy(f, file) //*文件复制到服务端
 			}
 		}
 	}
