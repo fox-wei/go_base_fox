@@ -5,8 +5,14 @@ import (
 	"reflect"
 )
 
+/*
+*Sieve of Eratosthenes 埃拉托斯特尼筛法
+* 求n以内的全部的素数
+*核心原理：素数的倍数一定是合数
+ */
+
 func Eratosthenes(n int) []int {
-	isPrime := make([]bool, n+1) //*筛选质数，默认值false
+	isPrime := make([]bool, n+1) //*筛选素数，默认值false
 
 	for i := 2; i < int(math.Pow(float64(n), 0.5))+1; i++ {
 		if !isPrime[i] {
