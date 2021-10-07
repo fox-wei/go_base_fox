@@ -16,7 +16,7 @@ import (
 func sayHello(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm() //?解析传递参数，如果没有这个无法获取表单数据
 	fmt.Println(r.URL.Path)
-	fmt.Fprintf(w, "想改，却最终失败，大抵上都是 “误以为改变是瞬间的事情” 造成的")
+	fmt.Fprintf(w, "Hello World")
 }
 
 func login(w http.ResponseWriter, r *http.Request) {
@@ -27,6 +27,15 @@ func login(w http.ResponseWriter, r *http.Request) {
 		hashWr := md5.New()
 		hashWr.Write([]byte(timeStamp))
 		token := fmt.Sprintf("%x", hashWr.Sum(nil))
+
+		//*Set the cookie
+		expiration := time.Now()
+		expiration = expiration.AddDate(1, 0, 0)
+		i := 0
+		cookieValue := strconv.Itoa(i)
+		cookies := http.Cookie{Name: "username", Value: cookieValue, Expires: expiration}
+		http.SetCookie(w, &cookies)
+		i++
 
 		//&解析html文件
 		t, err := template.ParseFiles("D:/compterstudy/programing_language/go_language/practicalgo/go_base_fox/goweb/example/form/formmain/login.html")
@@ -42,7 +51,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 		token := r.Form.Get("token")
 		//^验证表单的合法性
 		if token == "" {
-			fmt.Println("验证token的合法性")
+			fmt.Println("验证token的合法性....")
 		} else {
 			fmt.Println("错误")
 		}
@@ -51,6 +60,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("username:", getInt)
 		fmt.Println("password:", r.Form.Get("password"))
 		fmt.Fprintf(w, "Input, Ok\n")
+
+		cookie, err := r.Cookie("username")
+		if err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("cookie:", cookie)
+		}
 
 	}
 }
