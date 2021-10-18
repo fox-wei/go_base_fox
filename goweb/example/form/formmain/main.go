@@ -35,7 +35,6 @@ func login(w http.ResponseWriter, r *http.Request) {
 		cookieValue := strconv.Itoa(i)
 		cookies := http.Cookie{Name: "username", Value: cookieValue, Expires: expiration}
 		http.SetCookie(w, &cookies)
-		i++
 
 		//&解析html文件
 		t, err := template.ParseFiles("D:/compterstudy/programing_language/go_language/practicalgo/go_base_fox/goweb/example/form/formmain/login.html")

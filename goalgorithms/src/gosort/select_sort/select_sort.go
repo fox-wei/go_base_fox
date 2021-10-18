@@ -30,3 +30,18 @@ func SelectionSort(arr []int) []int {
 
 	return result
 }
+
+//^Bubble sort，升序
+func BubbleSort(arr []int) []int {
+	flag := true
+	for flag {
+		flag = false
+		for i := 0; i < len(arr)-1; i++ {
+			if arr[i] > arr[i+1] {
+				arr[i], arr[i+1] = arr[i+1], arr[i] //?两两交换
+				flag = true                         //*如果不交换则排序完成
+			}
+		}
+	}
+	return arr
+}

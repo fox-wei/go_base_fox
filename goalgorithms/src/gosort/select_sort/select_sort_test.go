@@ -11,4 +11,6 @@ func TestSelectionSort(t *testing.T) {
 
 	s = SelectionSort(s)
 	fmt.Printf("升序排序...\n%v\n", s)
+
+	fmt.Printf("Bubble sort:%v\n", BubbleSort(s))
 }
