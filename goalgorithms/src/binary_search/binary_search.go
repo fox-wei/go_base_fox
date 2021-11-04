@@ -23,7 +23,7 @@ func BinarySearch(list []int, target int) int {
 			return mid
 		}
 
-		//*目标值小于中间值
+		//*中间值大于目标值
 		if guess > target {
 			high = mid - 1
 		} else {
