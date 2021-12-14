@@ -74,7 +74,7 @@ func logon(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("logon route method:%s\n", r.Method)
 
 	if r.Method == "GET" {
-		t, err := template.ParseFiles("goweb\\example\\form\formmain\\login.html")
+		t, err := template.ParseFiles("goweb\\example\\form\\formmain\\logon.html")
 		if err != nil {
 			fmt.Println(err)
 		} else {
