@@ -17,7 +17,7 @@ func autoLogin(w http.ResponseWriter, r *http.Request) {
 		pass, err2 := r.Cookie("password")
 
 		//*解析html
-		t, errParse := template.ParseFiles("goweb\\example\\session\\logingo\\login.html")
+		t, errParse := template.ParseFiles("goweb\\example\\session\\logingo\\main\\login.html")
 
 		if err1 != nil || err2 != nil {
 			if errParse != nil {
@@ -32,11 +32,12 @@ func autoLogin(w http.ResponseWriter, r *http.Request) {
 			fmt.Println(user.Value, pass.Value)
 		}
 	} else {
+		//!post请求
 		r.ParseForm() //?解析参数
 
 		//*获取表单数据
 		name := r.Form.Get("username")
-		pass := r.Form.Get("password")
+		pass := r.Form.Get("sno")
 		fmt.Println(name, pass)
 
 		//*Set cookie
@@ -53,6 +54,9 @@ func autoLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	//*加载静态资源
+	http.Handle("/../", http.StripPrefix("/../", http.FileServer(http.Dir("mylogin"))))
+
 	http.HandleFunc("/login", autoLogin)
 	err := http.ListenAndServe(":9090", nil)
 
