@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+//*抽象产品
 type Lunch interface {
 	Cook()
 }
@@ -20,11 +21,13 @@ func (v *Vegetable) Cook() {
 	fmt.Println("Cooking the vegetable, the taste is good")
 }
 
+//*抽象工厂
 type lunchFactory interface {
 	CreateFood() Lunch
 	CreateVegetable() Lunch
 }
 
+//?具体工厂
 type SimpleLunchFactory struct{}
 
 func (s *SimpleLunchFactory) CreateFood() Lunch {
