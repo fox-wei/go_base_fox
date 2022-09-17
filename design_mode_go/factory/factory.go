@@ -2,18 +2,23 @@ package factory
 
 import "fmt"
 
+/*
+*简单工厂模式：创建对象实例
+ */
+
 //?定义接口，吃
+//?抽象产品
 type EatFool interface {
 	MyFavoriteFood()
 }
 
+//*具体产品
 type Chinese struct{}
 
 func (c Chinese) MyFavoriteFood() {
 	fmt.Println("Chinese like eating the rice and noodles")
 }
 
-//*产品
 type American struct{}
 
 func (a American) MyFavoriteFood() {
