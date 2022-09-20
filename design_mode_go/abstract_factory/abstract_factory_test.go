@@ -5,11 +5,31 @@ import (
 )
 
 func TestNewlunchFactory(t *testing.T) {
-	factory := NewlunchFactory()
+	var factory AbstractFactory
+	var tv ITelevision
+	var air IAirConditioner
 
-	rice := factory.CreateFood()
-	rice.Cook()
+	factory = &HuaweiFactory{}
+	tv = factory.CreateTelevision()
+	air = factory.CreateAirConditioner()
+	tv.Wathch()
+	air.SetTemperature(26)
+}
 
-	vegetalbe := factory.CreateVegetable()
-	vegetalbe.Cook()
+func TestMiAirConditioner_SetTemperature(t *testing.T) {
+	type args struct {
+		temperature int
+	}
+	tests := []struct {
+		name string
+		ma   *MiAirConditioner
+		args args
+	}{
+		// TODO: Add test cases.
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			tt.ma.SetTemperature(tt.args.temperature)
+		})
+	}
 }

@@ -1,43 +1,70 @@
 package abstract_factory
 
-import (
-	"fmt"
-)
+import "fmt"
+
+//*抽象工厂模式：用于创建一系列相关的或者相互依赖的对象
+//?工厂方法模式针对的是一个产品的等级结构
+//^抽象工厂模式则需要面对多个产品等级结构
+
+//?抽象工厂
+type AbstractFactory interface {
+	CreateTelevision() ITelevision
+	CreateAirConditioner() IAirConditioner
+}
 
 //*抽象产品
-type Lunch interface {
-	Cook()
+type ITelevision interface {
+	Wathch()
 }
 
-type Rice struct{}
-
-func (r *Rice) Cook() {
-	fmt.Println("I'm cooking the rice")
+type IAirConditioner interface {
+	SetTemperature(int)
 }
 
-type Vegetable struct{}
+//*具体工厂和具体产品族
 
-func (v *Vegetable) Cook() {
-	fmt.Println("Cooking the vegetable, the taste is good")
+//&华为工厂
+type HuaweiFactory struct{}
+
+func (hf *HuaweiFactory) CreateTelevision() ITelevision {
+	return &HuaweiTv{}
 }
 
-//*抽象工厂
-type lunchFactory interface {
-	CreateFood() Lunch
-	CreateVegetable() Lunch
+func (hf *HuaweiFactory) CreateAirConditioner() IAirConditioner {
+	return &HuaweiAirConditioner{}
 }
 
-//?具体工厂
-type SimpleLunchFactory struct{}
+type HuaweiTv struct{}
 
-func (s *SimpleLunchFactory) CreateFood() Lunch {
-	return &Rice{}
+func (hw *HuaweiTv) Wathch() {
+	fmt.Println("watch huawei TV")
 }
 
-func (s *SimpleLunchFactory) CreateVegetable() Lunch {
-	return &Vegetable{}
+type HuaweiAirConditioner struct{}
+
+func (ha *HuaweiAirConditioner) SetTemperature(temperature int) {
+	fmt.Printf("The hua wei aircondition's temperature is %d\n", temperature)
 }
 
-func NewlunchFactory() lunchFactory {
-	return &SimpleLunchFactory{}
+//*Mi工厂
+type MiFactory struct{}
+
+func (mf *MiFactory) CreateTelevision() ITelevision {
+	return &MiTelevision{}
+}
+
+func (mf *MiFactory) CreateAirConditioner() IAirConditioner {
+	return &MiAirConditioner{}
+}
+
+type MiTelevision struct{}
+
+func (mt *MiTelevision) Wathch() {
+	fmt.Println("wath Mi Tv")
+}
+
+type MiAirConditioner struct{}
+
+func (ma *MiAirConditioner) SetTemperature(temperature int) {
+	fmt.Printf("The Mi aircondition's temperature is %d\n", temperature)
 }
