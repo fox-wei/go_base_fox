@@ -78,6 +78,7 @@ Go代码块是包裹在一对大括号内部的声明和语句序列。如果大
          fmt.Println("it is", a)
          err = nil //不是外部的err
      }
+
      fmt.Println("after check, it is", a)
      return err //err != nil
  }
@@ -97,7 +98,7 @@ Go代码块是包裹在一对大括号内部的声明和语句序列。如果大
      }
      fmt.Println("call checkYear ok")
  }
- ```
+```
  在上述代码存在三个问题：
  1. 函数外部定义了a，内部又定义a,导致外部a=2020被屏蔽；
  2. swith代码块外部定义了err，内部定义了err，内部err值的改变不能影响外部的err，err无法设置为nil;
@@ -111,7 +112,6 @@ Go代码块是包裹在一对大括号内部的声明和语句序列。如果大
 平台相关型int, uint, uintptr(大到足以存储任意一个指针的值)。
 字面值与格式化输出：
 ```go
-
 d1 := 0b10000001 // 二进制，以"0b"为前缀
 d2 := 0B10000001 // 二进制，以"0B"为前缀
 e1 := 0o700      // 八进制，以"0o"为前缀
@@ -157,14 +157,25 @@ Go原生字符串的好处：
 ```go
 type StringHeader struct {
     Data uintptr
-     Len int
+    Len int
 }
 ```
 
 Go语言的组成从字节的角度看：Go字符串由一个可空的字节序列组成，字节的个数为字符串的长度，Go采用UTF-8编码，英文为一个字节，汉字为3个字节；从字符角度看：字符串由一个可空的字符组成。
 所以在使用`len`方法的时候，返回的是字符串的字节个数而不是字符个数；
 字符串迭代，普通for和for_range；普通for方式迭代字符串的每一个字节而不是字符；而for_range方式则每轮迭代字符串的Unicode的码点及该字符串的偏移值；要获取非ACCII字符串的长度可以使用utf-8包中的RuneCountInStringn方法。
+```go
+    s := "我是韦宗富" //非ASCII
+	fmt.Println("for-test")
+	for i := 0; i < len(s); i++ {
+		fmt.Println(s[i]) //字节；3*5
+	}
 
+	fmt.Printf("\nfor range test\n")
+	for _, a := range s {
+		fmt.Printf("%s", string(a)) //汉字字节值转化；5
+	}
+```
 ## Go常量
 常量是一种在源码编译期间被创建的语法元素，它的值在程序的生命周期内保持不变。Go常量的“创新”：
 1. 支持无类型常量，即可以不需要类型声明；
@@ -184,7 +195,7 @@ func main() {
 但是要注意基本数据类型的溢出问题。
 
 3. 可以用于实现枚举
- 
+
  枚举类型的本质上就是一个有限数量常量构成的集合。
  Go使用const块的两个特性，自动重复上上一行，引入const块中的行偏移值指示器iota;
  第一特性重复上一行：
@@ -194,7 +205,7 @@ func main() {
      Strawberry, Grape //11, 22
      A, B //11, 22
  )
-```
+ ```
  第二个特性：**iota行偏移值**<br>
  iota是Go语言的一个预定义标识符，它表示的是const声明块（包括单行声明）中，每个常量所处位置在块中的偏移值（从零开始）。
 ```go
@@ -216,7 +227,7 @@ const (
  ## 同构复合类型：从定长数组到变长切片
 
 Go语言的数组是一个长度固定的、由同构类型元素组成的连续序列。
-数组声明方式：var s [N]type;or var s [...]type = {s1, s2, ...};多维数组理解方式，可以进行拆分最后还是一个一维数组：例如数组var mArr[2][3][4]int
+数组声明方式：var s [N]type;or var s [...]type = {s1, s2, ...};多维数组理解方式，可以进行拆分最后还是一个一维数组：例如数组var mArr\[2\]\[3\]\[4\]int
 ![alt](https://static001.geekbang.org/resource/image/27/d3/274f3fc9e753b416f5c0615d256a99d3.jpg?wh=1920x1047)
 
 数组类型变量是一个整体，这就意味着一个数组变量表示的是整个数组。这点与 C 语言完全不同，在 C 语言中，数组变量可视为指向数组第一个元素的指针。在go中数组是按值传递。
@@ -231,9 +242,10 @@ type slice struct {
 ```
 array是指向底层数组的指针，另外两个分别表示长度和容量，切片可以简单理解为是对数组的封装。
 切片创建的三种方式；
+
 ```go
 func main() {
-    var s1 []int //未初始化，nil
+    var s1 []int //未初始化，nil;make初始化
     var s2 []int = {1, 2, 3, 4}
     var s3 := []int{1, 2, 3}
     s4 := make([]int, 4, 5) //len, cap, 默认len==cap
@@ -241,6 +253,7 @@ func main() {
 ```
 初值为零值nil的切片类型变量，可以借助内置的append的函数进行操作，这种在Go语言中被称为“零值可用”。
 还有一种方式采用array[low:high:max];获取的切片长度为high-low;容量为max-low,array是数组或者切片。
+
 ```go
 arr := [10]int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 sl := arr[3:7:9]
@@ -261,16 +274,16 @@ s = append(s, 5)
 ## 复合数据类型：map类型
 map是一组无序的键值对，用key和value表示,表示代码：
 ```go
-v := map[ype]type{}
+v := map[type]type{}
 ```
-对于key的类型要求，**要求支持"=="和"!="两种比较运算符，所以key类型不能是函数类型，切片类型，map自身类型，对于符合类型struct，则根据其字段是否支持类型比较确定。**
+对于key的类型要求，**要求支持"=="和"!="两种比较运算符，所以key类型不能是函数类型，切片类型，map自身类型，对于复合类型struct，则根据其字段是否支持类型比较确定。**
 
-map不支持零值可用，使用map必须要先初始化，初始化有两种方式：
+map不支持**零值可用**，切片和函数类型也是如此，只支持nil比较而不支持同类型比较；使用map必须要先初始化，初始化有两种方式：
 ```go
 s := make(map[type][type] [,cap]) //容量为可选方式，map不受容量限制，可动态扩容
 x := map[type]type
 ```
-Go允许声量字面值中的元素：
+Go允许忽略字面值中的元素类型：
 ```go
 type person struct {
     name string
@@ -294,7 +307,9 @@ m["1"] = 1
 某个key已经存在，我们插入一个新值，则覆盖原先key的值。<br>
 获取键值对数量：len方法，不能使用cap获取容量。<br>
 查找和读取数据：
-查找时，我们无法判断这个key是否存在map中；因为map的机制中，key不存在map，我们会获取这个value的零值。所以要确定key是否存在map，使用"comma ok“方法确定：
+
+查找时，我们无法判断这个key是否存在map中；因为map的机制中，key不存在map中 ，我们会获取这个value的零值。所以要确定key是否存在map，使用"comma ok“方法确定：
+
 ```go
 s := make(map[string]int)
 v, ok := s["1"]
@@ -333,6 +348,7 @@ func main() {
 ```
 上述两个类型，本质上是相同的类型，他们的变量可以**显示转型**进行相互赋值；相反，两个本质上是不同的类型，不能进行相互转换。<br>
 除了基于已有原生类型，符合类型也可以进行定义新类型：
+
 ```go
 type M map[string]int
 type N []int
@@ -356,15 +372,17 @@ type name struct {
 }
 ```
 字段首字母大小写决定这个字段是否包外可导，即包是否可以通过结构体名直接访问该字段。如果设置为小写，但是包外需要访问，我们可以设置一个方法去访问该字段。
-我们还可以用空标识符“_”作为结构体类型定义中的字段名称。这样以空标识符为名称的字段，不能被外部包引用，甚至无法被结构体所在的包使用。
+我们还可以用**空标识符“_”作为结构体类型定义中的字段名称**。这样以空标识符为名称的字段，不能被外部包引用，甚至无法被结构体所在的包使用。
 特殊结构体：
+
 1. 空结构体
 ```go
 type Empty struct {} //不包含任何字段
 var s Empty
 fmt.Println(unsafe.Sizeof(s)) //0
 ```
-空结构体变量内存占用为0，基于空结构体内存零开销的特性，Go经常使用空结构体作为“事件”信息进行Goroutine之间的通信。
+**空结构体变量内存占用为0，基于空结构体内存零开销的特性，Go经常使用空结构体作为“事件”信息进行Goroutine之间的通信。**
+
 ```go
 var c = make(chan struct{})
 c <-struct{}
@@ -386,16 +404,20 @@ type student struct {
     score float32
 }
 ```
-访问结构体中的字段，对象名.字段名即可；内部结构体字段访问，我们有时候不用对象名也直接访问。如果内部又同名字段，还是要用内部对象名访问，防止访问错误。
+访问结构体中的字段，`对象名.字段名`即可；内部结构体字段访问，我们有时候不用对象名也直接访问。如果内部又同名字段，还是要用内部对象名访问，防止访问错误。
 **结构体类型T不能在内部定义自己，但是\*T,[]T, map[type]T是可以在内部定义，因为这些都是引用类型，内存空间确定所以可以在内部定义。**
 
-Go 结构体类型由若干个字段组成，当这个结构体类型变量的各个字段的值都是零值时，我们就说这个结构体类型变量处于零值状态。采用零值初始化得到的零值变量，是有意义的，而且是直接可用的，我称这种类型为“零值可用”类型。比如：
+Go 结构体类型由若干个字段组成，当这个结构体类型变量的各个字段的值都是零值时，我们就说这个结构体类型变量处于零值状态。**采用零值初始化得到的零值变量，是有意义的，而且是直接可用的，我称这种类型为“零值可用”类型。**
+
+map和slice零值状态不能直接使用，需要使用初始化(make)。
+
 ```go 
+//“零值可用”的运用
 var mu sync.Mutex
 mu.Lock()
 mu.Unlock()
 ```
-字面值初始化结构体，可以注意字段赋值结构体：
+字面值初始化结构体，可以直接赋值结构体：
 ```go
 type book struct {
     name string
@@ -411,7 +433,12 @@ func main() {
 s := book{name:"go语言程序设计", page:200}
 ```
 
+**内存布局**
+
+
+
 ## 控制结构
+
 程序 = 数据结构 + 算法
 数据机构对应go语言中的基本类型和复合类型；算法是对真实世界运作规律的抽象，是解决真实世界中问题的步骤。
 
@@ -495,7 +522,8 @@ for i,j:=0, 0; i<10 && j <5; i+=1, j+=1 {
 ```
 
 另一种方式：for range<br>
-这种迭代使用于数组，切片，map，channel，string类型，而且迭代对象是对象的副本，所以对于非引用类型来说，迭代过程修改值是无效的。
+
+**这种迭代使用于数组，切片，map，channel，string类型，而且迭代对象是对象的副本，所以对于非引用类型来说，迭代过程修改值是无效的。**
 
 for 语句的"坑”与避坑方法
 1. for range循环变量重用：
@@ -506,7 +534,7 @@ func main() {
     for i, v := range m {
         go func() {
             time.Sleep(time.Second * 3)
-            fmt.Println(i, v)
+            fmt.Println(i, v) //5*(4, 5)
         }() //优化(i, v)作为参数
     }
 
@@ -518,7 +546,28 @@ func main() {
 i,v变量只声明一次，实际上被不断重用；所以这是一片临界区，goroutine竞争导致，只输出最后的结果。
 
 2. 参与循环的是 range 表达式的副本
-例如for range迭代数组，然后更改值；实际上原数组不改变，切片会改变，因为切片是引用类型，副本实际上是地址，指向底层数组。
+
+  ```go
+  func main() {
+      var a = [5]int{1, 2, 3, 4, 5}
+      var r [5]int
+  
+      fmt.Println("original a =", a)
+  
+      for i, v := range a {
+          if i == 0 {
+              a[1] = 12
+              a[2] = 13
+          }
+          r[i] = v
+      }
+  
+      fmt.Println("after for range loop, r =", r) //1, 2, 3, 4, 5
+      fmt.Println("after for range loop, a =", a) //1, 12, 13, 4, 5
+  }
+  ```
+
+  因为for-range是a的副本，虽然改变了外部a的值，但是副本不受影响；所以r的值与改变之前相同；如果a是切片，则改变相同，因为切片是引用类型，副本是地址。
 
 3. 遍历map中元素的随机性
 ```go
@@ -581,8 +630,9 @@ func main() {
 ```
 ## 函数
 ### 函数基础
-函数是唯一一种基于特定输入，实现特定并可返回任务执行结果的代码块（go方法本质上是函数)。
+函数是唯一一种基于特定输入，实现特定任务并可返回任务执行结果的代码块（go方法本质上是函数)。
 go函数组成：关键字`func`，函数名，参数列表，返回值列表以及函数体：
+
 ```go
 func hello(name string) string {
     return "hello " + name 
@@ -599,31 +649,42 @@ var hello = func(name string) string {
 
 **每个函数声明所定义的函数，仅仅是对应的函数类型的一个实例。**
 
-Go语言中，函数参数的传递采用**值传递**，将实际参数在内存中的表示逐位拷贝到形式参数中。基本数据类型，数组，结构体在内存中表示就是自身数据，因此值传递就是他们自身。
+Go语言中，函数参数的传递采用**值传递**，将实际参数在内存中的表示逐位拷贝到形式参数中。基本数据类型，数组，结构体在内存中表示就是自身数据，因此值传递就是他们自身，传递开销与自身大小成正比。
 切片，字符串,map，它们的表示是它们数据内容的“描述符”，它们大小固定，开销较小，这种方式叫做“浅拷贝”。
 
 变长参数表示：`...type`，本质上是切片；可以传入多个同类型参数；所以可直接传入切片,方法`name...`。<br>
-Go支持多返回值，返回值参数有名字的称为具名返回值，根据特殊场景的需求使用，例如函数使用`defer`；多部分情况时非具名返回值，即无参数名。
+Go支持多返回值，返回值参数有名字的称为具名返回值，根据特殊场景的需求使用，例如函数使用`defer`；大部分情况时非具名返回值，即无参数名。
 
-**函数是一等公民**<br>
-*编程语言一等公民的：*
+**函数是一等公民**
+
+*编程语言一等公民：*
+
 > 如果一门编程语言对某种语言元素的创建和使用没有限制，我们可以像对待值（value）一样对待这种语法元素，那么我们就称这种语法元素是这门编程语言的“一等公民”。拥有“一等公民”待遇的语法元素可以存储在变量中，可以作为参数传递给函数，可以在函数内部创建并可以作为返回值从函数返回。
 
 1. 函数可以存储在变量中；
 2. 支持在函数内创建并返回；
 ```go
-func setup(name string) func() {
-    fmt.Println("do something setup suff for ", name)
+func setup(task string) func() {
+    println("do some setup stuff for", task)
     return func() {
-        fmt.Println("do something teardown stuff for ", name)
+        println("do some teardown stuff for", task)
     }
 }
+
+func main() {
+    teardown := setup("demo")
+    defer teardown()
+    println("do some bussiness stuff")
+}
 ```
+
+
 3. 作为参数传入函数；
+
 ```go
 type myFunc func(int, int) int //函数类型
 
-func times(a, b int, fn myFunc) {
+func times(a, b int, fn myFunc) int	 {
     fmt.Println("start...")
     return fn(a, b)
 }
@@ -652,19 +713,69 @@ func main() {
 ```
 4. 拥有自己的类型，函数在go语言中是类型。
 
-**函数“一等公民”特性的妙用
+    ```go
+    // $GOROOT/src/net/http/server.go
+    type HandlerFunc func(ResponseWriter, *Request)
+    
+    // $GOROOT/src/sort/genzfunc.go
+    type visitFunc func(ast.Node) ast.Visitor
+    ```
+
+    
+
+**函数“一等公民”特性的妙用**
+
+应用一：函数类型妙用
+
+```go
+
+func greeting(w http.ResponseWriter, r *http.Request) {
+    fmt.Fprintf(w, "Welcome, Gopher!\n")
+}                    
+
+func main() {
+    http.ListenAndServe(":8080", http.HandlerFunc(greeting))
+}
+```
+
+应用二：利用闭包简化函数调用
+
+<u>Go闭包是在函数内部创建的匿名函数，这个匿名函数可以访问创建它的函数参数与局部变量。</u>
+
+一个应用就是柯里化，把接收多个参数的函数转换接收一个单一参数的函数。
+
+```go
+func times(x, y int) int {
+	return x * y
+}
+
+func partitalTimes(x int) func(int) int {
+	return func(i int) int {
+		return times(x, i)
+	}
+}
+
+func main() {
+    twoTimes := partitalTimes(2) //func(i int) int {return times(2, i)}
+	fmt.Println(twoTimes(5)) //2*5
+	fmt.Println(twoTimes(6)) //2*6
+}
+```
+
 
 
 ### 函数：结合多返回值处理错误
+
 Go利用多返回值处理错误，错误信息通过返回值携带(n int, err error);
-error是一个接口，定义如下：
+error是一个接口，同一使用这个接口表示错误，定义如下：
+
 ```go
 // $GOROOT/src/builtin/builtin.go
 type interface error {
     Error() string
 }
 ```
-Go提供构造错误的方法：errors.New("")和fmt.Errorf("", argument):
+Go提供构造错误的两种方法以实现error接口：errors.New("")和fmt.Errorf("", argument):
 ```go
 err := errors.New("your first demo error")
 errWithCtx = fmt.Errorf("index %d is out of bounds", i)
@@ -676,7 +787,31 @@ if err != nil { //错误处理
 }
 ```
 
+使用error类型，而不是传统的整型或其他类型作为错误类型的好处：
+
+- 统一了错误类型；
+- 错误是值，可以使用==和!=逻辑比较；
+- 易扩展，支持自定义错误上下文。
+
+错误处理使用策略：
+
+**透明错误处理策略**：根据函数/方法返回的error类型变量中携带的错误值信息做决策，选择后序代码执行路径的过程。
+
+```go
+//这是最常见的一种使用方式
+err := doSomething()
+if err != nil {
+    // 不关心err变量底层错误值所携带的具体上下文信息
+    // 执行简单错误处理逻辑并返回
+    ... ...
+    return err
+}
+```
+
+**“哨兵”处理错误策略**：	
+
 ### 怎样让函数更简洁健壮
+
 **健壮性“三不要”原则**
 
 原则一：不要相信外部输入的参数；需要对输入参数进行检查，返回预设厕屋。
@@ -875,7 +1010,7 @@ receive参数r类型是指针，则可以修改结构体，普通类型不能修
      t2.M2()
      println(t2.a) // 11
  }
- ```
+```
  从中我们可以知道，无论是T类型实例，还是\*T类型实例，都既可以调用recevier为T的方法，也可以调用为\*T的方法。这是因为Go编译器进行了类型转换。<br>
 
  **选择receiver参数类型的第二原则**
@@ -902,7 +1037,7 @@ func main() {
     i = pt //*T参数类型包含的方法为*T和T类型的方法，反之不同
     i = t // cannot use t (type T) as type Interface in assignment: T does not implement Interface (M2 method has pointer receiver)
 }
-```
+ ```
 方法集合是用来判断一个类型是否实现了某个接口类型，或者说方法集合决定接口实现。
 
 ```go
